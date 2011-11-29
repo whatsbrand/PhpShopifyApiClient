@@ -10,7 +10,7 @@ Lightweight multi-paradigm PHP (JSON) client for the [Shopify API](http://api.sh
 
 ## Getting Started
 
-### Require
+Basic needs for authorization and redirecting
 
 ```php
 <?php
