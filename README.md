@@ -62,8 +62,8 @@ Making API calls:
 
 			// API call limit helpers
 			echo $sc->callsMade(); // 2
-			echo $sc->callsLeft($response_headers); // 498
-			echo $sc->callLimit($response_headers); // 500
+			echo $sc->callsLeft(); // 498
+			echo $sc->callLimit(); // 500
 
 		}
 		catch (ShopifyApiException $e)
