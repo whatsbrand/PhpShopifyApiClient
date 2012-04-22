@@ -1,29 +1,41 @@
 <?php
 class ShopifyClient {
-	private $shop_domain;
+	public $shop_domain;
 	private $token;
 	private $api_key;
 	private $secret;
-	private $is_private_app;
 	private $last_response_headers = null;
 
-	public function __construct($shop_domain, $token, $api_key, $secret, $is_private_app=false) {
+	public function __construct($shop_domain, $token, $api_key, $secret) {
 		$this->name = "ShopifyClient";
 		$this->shop_domain = $shop_domain;
 		$this->token = $token;
 		$this->api_key = $api_key;
 		$this->secret = $secret;
-		$this->is_private_app = $is_private_app;
 	}
-	
-	public function getAppInstallUrl() {
-		return "http://{$this->shop_domain}/admin/api/auth?api_key={$this->api_key}";
+
+	// Get the URL required to request authorization
+	public function getAuthorizeUrl($scope, $redirect_url='') {
+		$url = "http://{$this->shop_domain}/admin/oauth/authorize?client_id={$this->api_key}&scope=" . urlencode($scope);
+		if ($redirect_url != '')
+		{
+			$url .= "&redirect_uri=" . urlencode($redirect_url);
+		}
+		return $url;
 	}
-	
-	public function isAppInstalled($timestamp, $signature) {
-		return (md5("{$this->secret}shop={$this->shop_domain}t={$this->token}timestamp={$timestamp}") === $signature);
+
+	// Once the User has authorized the app, call this with the code to get the access token
+	public function getAccessToken($code) {
+		// POST to  POST https://SHOP_NAME.myshopify.com/admin/oauth/access_token
+		$url = "https://{$this->shop_domain}/admin/oauth/access_token";
+		$payload = "client_id={$this->api_key}&client_secret={$this->secret}&code=$code";
+		$response = $this->curlHttpApiRequest('POST', $url, '', $payload, array());
+		$response = json_decode($response, true);
+		if (isset($response['access_token']))
+			return $response['access_token'];
+		return '';
 	}
-	
+
 	public function callsMade()
 	{
 		return $this->shopApiCallLimitParam(0);
@@ -41,13 +53,15 @@ class ShopifyClient {
 
 	public function call($method, $path, $params=array())
 	{
-		$password = $this->is_private_app ? $this->secret : md5($this->secret.$this->token);
-		$baseurl = "https://{$this->api_key}:$password@{$this->shop_domain}/";
+		$baseurl = "https://{$this->shop_domain}/";
 	
 		$url = $baseurl.ltrim($path, '/');
 		$query = in_array($method, array('GET','DELETE')) ? $params : array();
 		$payload = in_array($method, array('POST','PUT')) ? stripslashes(json_encode($params)) : array();
 		$request_headers = in_array($method, array('POST','PUT')) ? array("Content-Type: application/json; charset=utf-8", 'Expect:') : array();
+
+		// add auth headers
+		$request_headers['X-Shopify-Access-Token'] = $this->token;
 
 		$response = $this->curlHttpApiRequest($method, $url, $query, $payload, $request_headers);
 		$response = json_decode($response, true);
@@ -69,7 +83,6 @@ class ShopifyClient {
 		curl_close($ch);
 
 		if ($errno) throw new ShopifyCurlException($error, $errno);
-
 		list($message_headers, $message_body) = preg_split("/\r\n\r\n|\n\n|\r\r/", $response, 2);
 		$this->last_response_headers = $this->curlParseHeaders($message_headers);
 
