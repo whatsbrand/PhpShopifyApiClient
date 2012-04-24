@@ -61,7 +61,7 @@ class ShopifyClient {
 		$request_headers = in_array($method, array('POST','PUT')) ? array("Content-Type: application/json; charset=utf-8", 'Expect:') : array();
 
 		// add auth headers
-		$request_headers['X-Shopify-Access-Token'] = $this->token;
+		$request_headers[] = 'X-Shopify-Access-Token: ' . $this->token;
 
 		$response = $this->curlHttpApiRequest($method, $url, $query, $payload, $request_headers);
 		$response = json_decode($response, true);
@@ -108,19 +108,13 @@ class ShopifyClient {
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
 		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-		if ('GET' == $method)
+		curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, $method);
+		if (!empty($request_headers)) curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);
+		
+		if ($method != 'GET' && !empty($payload))
 		{
-			curl_setopt($ch, CURLOPT_HTTPGET, true);
-		}
-		else
-		{
-			curl_setopt ($ch, CURLOPT_CUSTOMREQUEST, $method);
-			if (!empty($request_headers)) curl_setopt($ch, CURLOPT_HTTPHEADER, $request_headers);
-			if (!empty($payload))
-			{
-				if (is_array($payload)) $payload = http_build_query($payload);
-				curl_setopt ($ch, CURLOPT_POSTFIELDS, $payload);
-			}
+			if (is_array($payload)) $payload = http_build_query($payload);
+			curl_setopt ($ch, CURLOPT_POSTFIELDS, $payload);
 		}
 	}
 
