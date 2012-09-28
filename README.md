@@ -17,9 +17,21 @@ Basic needs for authorization and redirecting
 <?php
 
 	require 'shopify.php';
-
+	if (isset($_GET['code'])) { // if the code param has been sent to this page... we are in Step 2
+		// Step 2: do a form POST to get the access token
+		$shopifyClient = new ShopifyClient($_GET['shop'], "", SHOPIFY_API_KEY, SHOPIFY_SECRET);
+		session_unset();
+		
+		// Now, request the token and store it in your session.
+		$_SESSION['token'] = $shopifyClient->getAccessToken($_GET['code']);
+		if ($_SESSION['token'] != '')
+			$_SESSION['shop'] = $_GET['shop'];
+	
+		header("Location: index.php");
+		exit;		
+	}
 	// if they posted the form with the shop name
-	if (isset($_POST['shop']) || isset($_GET['shop'])) {
+	else if (isset($_POST['shop']) || isset($_GET['shop'])) {
 	
 		// Step 1: get the shopname from the user and redirect the user to the
 		// shopify authorization page where they can choose to authorize this app
@@ -39,24 +51,7 @@ Basic needs for authorization and redirecting
 		// redirect to authorize url
 		header("Location: " . $shopifyClient->getAuthorizeUrl(SHOPIFY_SCOPE, $pageURL));
 		exit;
-	
-	
-	// if the code param has been sent to this page... we are in Step 2
-	} else if (isset($_GET['code'])) { 
-		// Step 2: do a form POST to get the access token
-		$shopifyClient = new ShopifyClient($_GET['shop'], "", SHOPIFY_API_KEY, SHOPIFY_SECRET);
-		session_unset();
-		
-		// Now, request the token and store it in your session.
-		$_SESSION['token'] = $shopifyClient->getAccessToken($_GET['code']);
-		if ($_SESSION['token'] != '')
-			$_SESSION['shop'] = $_GET['shop'];
-	
-		header("Location: index.php");
-		exit;		
 	}
-	
-	
 	
 	// first time to the page, show the form below
 ?>
