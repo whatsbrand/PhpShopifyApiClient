@@ -72,6 +72,22 @@ class ShopifyClient {
 		return (is_array($response) and (count($response) > 0)) ? array_shift($response) : $response;
 	}
 
+	public function validateSignature($query)
+	{
+		if(!is_array($query) || empty($query['signature']) || !is_string($query['signature']))
+			return false;
+
+		foreach($query as $k => $v) {
+			if($k == 'signature') continue;
+			$signature[] = $k . '=' . $v;
+		}
+
+		sort($signature);
+		$signature = md5($this->secret . implode('', $signature));
+
+		return $query['signature'] == $signature;
+	}
+
 	private function curlHttpApiRequest($method, $url, $query='', $payload='', $request_headers=array())
 	{
 		$url = $this->curlAppendQuery($url, $query);
