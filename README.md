@@ -135,3 +135,16 @@ Making API calls:
 	}
 ?>
 ```
+
+When receiving requests from the Shopify API, validate the signature value:
+
+```php
+<?php
+
+    $sc = new ShopifyClient($_GET['shop'], '', SHOPIFY_API_KEY, SHOPIFY_SECRET);
+
+    if(!$sc->validateSignature($_GET))
+        die('Error: invalid signature.');
+
+?>
+```
