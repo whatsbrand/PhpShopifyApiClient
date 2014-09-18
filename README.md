@@ -31,7 +31,7 @@ Basic needs for authorization and redirecting
 		exit;		
 	}
 	// if they posted the form with the shop name
-	else if (isset($_POST['shop']) || isset($_GET['shop'])) {
+	else if (isset($_POST['shop'])) {
 	
 		// Step 1: get the shopname from the user and redirect the user to the
 		// shopify authorization page where they can choose to authorize this app
