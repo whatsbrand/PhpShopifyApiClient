@@ -57,7 +57,7 @@ class ShopifyClient {
 	
 		$url = $baseurl.ltrim($path, '/');
 		$query = in_array($method, array('GET','DELETE')) ? $params : array();
-		$payload = in_array($method, array('POST','PUT')) ? stripslashes(json_encode($params)) : array();
+		$payload = in_array($method, array('POST','PUT')) ? json_encode($params) : array();
 		$request_headers = in_array($method, array('POST','PUT')) ? array("Content-Type: application/json; charset=utf-8", 'Expect:') : array();
 
 		// add auth headers
