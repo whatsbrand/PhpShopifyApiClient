@@ -78,7 +78,7 @@ class ShopifyClient {
 			return false;
 
 		foreach($query as $k => $v) {
-			if($k == 'signature') continue;
+			if($k != 'shop' && $k != 'code' && $k != 'timestamp') continue;
 			$signature[] = $k . '=' . $v;
 		}
 
