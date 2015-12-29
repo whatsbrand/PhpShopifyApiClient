@@ -17,6 +17,14 @@ Basic needs for authorization and redirecting
 <?php
 
 	require 'shopify.php';
+
+	/* Define your APP`s key and secret*/
+	define('SHOPIFY_API_KEY','');
+	define('SHOPIFY_SECRET','');
+	
+	/* Define requested scope (access rights) - checkout https://docs.shopify.com/api/authentication/oauth#scopes 	*/
+	define('SHOPIFY_SCOPE','');	//eg: define('SHOPIFY_SCOPE','read_orders,write_orders');
+	
 	if (isset($_GET['code'])) { // if the code param has been sent to this page... we are in Step 2
 		// Step 2: do a form POST to get the access token
 		$shopifyClient = new ShopifyClient($_GET['shop'], "", SHOPIFY_API_KEY, SHOPIFY_SECRET);
