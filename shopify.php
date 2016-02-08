@@ -74,18 +74,29 @@ class ShopifyClient {
 
 	public function validateSignature($query)
 	{
-		if(!is_array($query) || empty($query['signature']) || !is_string($query['signature']))
+		if(!is_array($query) || empty($query['hmac']) || !is_string($query['hmac']))
 			return false;
 
-		foreach($query as $k => $v) {
-			if($k != 'shop' && $k != 'hmac' && $k != 'timestamp') continue;
-			$signature[] = $k . '=' . $v;
+		$dataString = [];
+		foreach ($query as $key => $value) {
+			if(!in_array($key, ['shop', 'timestamp', 'code'])) continue;			
+
+			$key = str_replace('=', '%3D', $key);
+			$key = str_replace('&', '%26', $key);
+			$key = str_replace('%', '%25', $key);
+
+			$value = str_replace('&', '%26', $value);
+			$value = str_replace('%', '%25', $value);
+
+			$dataString[] = $key . '=' . $value;
 		}
+		sort($dataString);
+		
+		$string = implode("&", $dataString);
 
-		sort($signature);
-		$signature = md5($this->secret . implode('', $signature));
-
-		return $query['signature'] == $signature;
+		$signature = hash_hmac('sha256', $string, $this->secret);
+		
+		return $query['hmac'] == $signature;
 	}
 
 	private function curlHttpApiRequest($method, $url, $query='', $payload='', $request_headers=array())
