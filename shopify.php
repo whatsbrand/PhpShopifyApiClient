@@ -77,9 +77,9 @@ class ShopifyClient {
 		if(!is_array($query) || empty($query['hmac']) || !is_string($query['hmac']))
 			return false;
 
-		$dataString = [];
+		$dataString = array();
 		foreach ($query as $key => $value) {
-			if(!in_array($key, ['shop', 'timestamp', 'code'])) continue;			
+			if(!in_array($key, array('shop', 'timestamp', 'code'))) continue;
 
 			$key = str_replace('=', '%3D', $key);
 			$key = str_replace('&', '%26', $key);
@@ -94,7 +94,8 @@ class ShopifyClient {
 		
 		$string = implode("&", $dataString);
 
-		$signature = hash_hmac('sha256', $string, $this->secret);
+		$signatureBin = mhash(MHASH_SHA256, $string, $this->secret);
+		$signature = bin2hex($signatureBin);
 		
 		return $query['hmac'] == $signature;
 	}
