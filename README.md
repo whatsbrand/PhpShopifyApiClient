@@ -1,4 +1,4 @@
-# PhpShopifyApiClient
+# php-shopify-api-client
 
 Lightweight multi-paradigm PHP (JSON) client for the [Shopify API](http://api.shopify.com/).
 

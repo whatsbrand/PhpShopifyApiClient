@@ -1,9 +1,9 @@
 {
-    "name": "whatsbrand/PhpShopifyApiClient",
+    "name": "whatsbrand/php-shopify-api-client",
     "type": "library",
     "description": "Lightweight multi-paradigm PHP (JSON) client for the Shopify API",
     "keywords": ["shopify","api"],
-    "homepage": "https://github.com/whatsbrand/PhpShopifyApiClient",
+    "homepage": "https://github.com/whatsbrand/php-shopify-api-client",
     "license": "MIT",
     "authors": [
         {
