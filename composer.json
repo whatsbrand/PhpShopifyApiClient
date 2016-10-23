@@ -1,0 +1,25 @@
+{
+    "name": "whatsbrand/PhpShopifyApiClient",
+    "type": "library",
+    "description": "Lightweight multi-paradigm PHP (JSON) client for the Shopify API",
+    "keywords": ["shopify","api"],
+    "homepage": "https://github.com/whatsbrand/PhpShopifyApiClient",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sandeep Shetty",
+            "email": "sandeep.shetty@gmail.com",
+            "homepage": "http://sandeep.shetty.in",
+            "role": "Developer"
+        },
+        {
+            "name": "Andre Lohmann",
+            "email": "lohmann.andre@gmail.com",
+            "homepage": "http://whatsbrand.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    }
+}
