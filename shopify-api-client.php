@@ -34,7 +34,7 @@
 							$state = sha1(time());
 					}
 					$url = $this->shop_domain."admin/oauth/authorize?client_id={$this->api_key}&scope=" . urlencode($scope);
-					$url .='&state=' urlencode($state);
+					$url .='&state='.urlencode($state);
 					if ($redirect_url != ''){
 							$url .= "&redirect_uri=" . urlencode($redirect_url);
 					}
@@ -175,15 +175,15 @@
 
 			private function shopApiCallLimitParam($index){
 					if ($this->last_response_headers == null){
-							throw new Exception('Cannot be called before an API call.');
+							throw new \Exception('Cannot be called before an API call.');
 					}
 					$params = explode('/', $this->last_response_headers['http_x_shopify_shop_api_call_limit']);
 					return (int) $params[$index];
 			}
 	}
 
-	class ShopifyCurlException extends Exception { }
-	class ShopifyApiException extends Exception {
+	class ShopifyCurlException extends \Exception { }
+	class ShopifyApiException extends \Exception {
 			protected $method;
 			protected $path;
 			protected $params;
