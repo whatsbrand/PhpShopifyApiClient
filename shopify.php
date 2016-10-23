@@ -23,6 +23,11 @@
 					return $this->private_app ? "https://{$this->api_key}:{$this->secret}@$shop_domain/" : "https://$shop_domain/";
 			}
 
+			// Get the Installation URL
+			public function getInstallUrl(){
+					return $this->shop_domain."admin/api/auth?api_key=".$this->api_key;
+			}
+
 			// Get the URL required to request authorization
 			public function getAuthorizeUrl($scope, $redirect_url='', $state = null) {
 					if($state === null){
